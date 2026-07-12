@@ -2,6 +2,9 @@ const express = require('express');
 const pool = require('./db');
 const app = express();
 
+const propertiesRouter = require('./routes/properties');
+app.use('/api/properties', propertiesRouter);
+
 
 app.get('/api/health', async (req, res) => {
     try {
