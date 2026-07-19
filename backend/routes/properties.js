@@ -85,4 +85,58 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/:id/openhouses', async (req, res) => {
+    const { id } = req.params;
+
+    if (!id || id.length > 50 || !/^[a-zA-Z0-9_-]+$/.test(id)){
+        return res.status(400).json({ error: 'Invalid listing ID format' });
+    }
+
+    try {
+        const [property] = await pool.query(
+            'SELECT id FROM rets_property WHERE L_ListingID = ?',
+            [id]
+        );
+
+        if (property.length === 0){
+            return res.status(404).json({ error: `Property with ID ${id} not found` });
+        }
+
+        const [openhouses] = await pool.query(
+            `SELECT * FROM rets_openhouse
+            WHERE L_ListingID = ?
+            ORDER BY OpenHouseDate ASC, OH_StartTime ASC`,
+            [id]
+        );
+        
+        res.json(openhouses);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+router.get('/:id', async (req, res) => {
+    const { id } = req.params;
+    
+    if (!id || id.length > 50 || !/^[a-zA-Z0-9_-]+$/.test(id)){
+        return res.status(400).json({ error: 'Invalid listing ID format' });
+    }
+
+    try {
+        const [rows] = await pool.query(
+            'SELECT * FROM rets_property WHERE L_ListingID = ?',
+            [id]
+        );
+        if (rows.length === 0){
+            return res.status(404).json({ error: `Property with ID ${id} not found` });
+        }
+
+        res.json(rows[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 module.exports = router;
