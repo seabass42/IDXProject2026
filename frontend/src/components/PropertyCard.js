@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function parsePhotos(raw) {
   try {
@@ -11,11 +12,15 @@ function parsePhotos(raw) {
 }
 
 function PropertyCard({ property }) {
+  const navigate = useNavigate();
   const photos = parsePhotos(property.L_Photos);
   const firstPhoto = photos[0] || null;
 
   return (
-    <div style={styles.card}>
+    <div
+      style={styles.card}
+      onClick={() => navigate(`/property/${property.L_ListingID}`)}
+    >
       {firstPhoto ? (
         <img src={firstPhoto} alt="property" style={styles.image} />
       ) : (
@@ -32,7 +37,9 @@ function PropertyCard({ property }) {
         <p style={styles.details}>
           {property.L_Keyword2 ?? '?'} beds &bull;{' '}
           {property.LM_Dec_3 ?? '?'} baths &bull;{' '}
-          {property.LM_Int2_3 ? `${Number(property.LM_Int2_3).toLocaleString()} sqft` : '? sqft'}
+          {property.LM_Int2_3
+            ? `${Number(property.LM_Int2_3).toLocaleString()} sqft`
+            : '? sqft'}
         </p>
       </div>
     </div>

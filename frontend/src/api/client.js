@@ -13,3 +13,16 @@ export async function fetchProperties(params = {}) {
   if (!res.ok) throw new Error(`API error: ${res.status}`);
   return res.json();
 }
+
+export async function fetchPropertyById(id) {
+  const res = await fetch(`/api/properties/${id}`);
+  if (res.status === 404) throw new Error('Property not found');
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  return res.json();
+}
+
+export async function fetchOpenHouses(id) {
+  const res = await fetch(`/api/properties/${id}/openhouses`);
+  if (!res.ok) throw new Error(`API error: ${res.status}`);
+  return res.json();
+}
