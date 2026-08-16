@@ -85,6 +85,42 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/openhouses', async (req, res) => {
+  const { startDate, endDate } = req.query;
+
+  try {
+    const conditions = [];
+    const values = [];
+
+    if (startDate) {
+      conditions.push('oh.OpenHouseDate >= ?');
+      values.push(startDate);
+    }
+    if (endDate) {
+      conditions.push('oh.OpenHouseDate <= ?');
+      values.push(endDate);
+    }
+
+    const whereClause = conditions.length > 0
+      ? 'WHERE ' + conditions.join(' AND ')
+      : '';
+
+    const [results] = await pool.query(
+      `SELECT oh.* FROM rets_openhouse oh
+       INNER JOIN rets_property rp ON oh.L_ListingID = rp.L_ListingID
+       ${whereClause}
+       ORDER BY oh.OpenHouseDate ASC, oh.OH_StartTime ASC`,
+      values
+    );
+
+    res.json(results);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 router.get('/:id/openhouses', async (req, res) => {
     const { id } = req.params;
 
