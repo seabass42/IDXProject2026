@@ -19,7 +19,7 @@ test('calls onSearch with filled values when submitted', () => {
   fireEvent.change(screen.getByPlaceholderText('City'), {
     target: { name: 'city', value: 'Anaheim' },
   });
-  fireEvent.submit(screen.getByRole('button', { name: /search/i }).closest('form'));
+  fireEvent.submit(screen.getByRole('form', { name: 'property-filters' }));
 
   expect(onSearch).toHaveBeenCalledWith(expect.objectContaining({ city: 'Anaheim' }));
 });

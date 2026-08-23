@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -74,6 +75,21 @@ const styles = {
   address: { margin: '0 0 4px', fontSize: '14px' },
   city: { margin: '0 0 4px', fontSize: '14px', color: '#555' },
   details: { margin: 0, fontSize: '13px', color: '#777' },
+};
+
+PropertyCard.propTypes = {
+  property: PropTypes.shape({
+    id: PropTypes.number,
+    L_ListingID: PropTypes.string,
+    L_Photos: PropTypes.string,
+    L_SystemPrice: PropTypes.number,
+    L_Address: PropTypes.string,
+    L_City: PropTypes.string,
+    L_State: PropTypes.string,
+    L_Keyword2: PropTypes.number,
+    LM_Dec_3: PropTypes.number,
+    LM_Int2_3: PropTypes.number,
+  }).isRequired,
 };
 
 export default PropertyCard;

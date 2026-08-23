@@ -32,7 +32,7 @@ function PropertyFilters({ onSearch, onClear }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={styles.form}>
+    <form onSubmit={handleSubmit} aria-label="property-filters" style={styles.form}>
       <input
         name="city"
         placeholder="City"
