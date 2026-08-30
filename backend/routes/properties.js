@@ -6,7 +6,7 @@ router.get('/', async (req, res) => {
     try {
         const { city, zipcode, minPrice, maxPrice, beds, baths } = req.query;
         let limit = req.query.limit ?? 20;
-        let offset = req.query.offseet ?? 0;
+        let offset = req.query.offset ?? 0;
 
         limit = Number(limit);
         offset = Number(offset);
@@ -42,7 +42,7 @@ router.get('/', async (req, res) => {
             values.push(zipcode);
         }
         if (minPrice){
-            conditions.push('L_SystemPrice >+ ?');
+            conditions.push('L_SystemPrice >= ?');
             values.push(Number(minPrice));
         }
         if (maxPrice) {

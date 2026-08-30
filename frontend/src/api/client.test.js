@@ -1,4 +1,4 @@
-import { fetchProperties } from './client';
+import { fetchProperties, fetchPropertyById, fetchOpenHouses, fetchOpenHousesByDateRange } from './client';
 
 beforeEach(() => {
   global.fetch = jest.fn();
@@ -38,4 +38,47 @@ test('fetchProperties throws on non-ok response', async () => {
   });
 
   await expect(fetchProperties()).rejects.toThrow('API error: 500');
+});
+
+test('fetchPropertyById returns property data', async () => {
+  global.fetch.mockResolvedValueOnce({
+    ok: true,
+    json: async () => ({ id: 1, L_ListingID: '1115119412' }),
+  });
+
+  const data = await fetchPropertyById('1115119412');
+  expect(fetch).toHaveBeenCalledWith('/api/properties/1115119412');
+  expect(data.L_ListingID).toBe('1115119412');
+});
+
+test('fetchPropertyById throws on 404', async () => {
+  global.fetch.mockResolvedValueOnce({
+    ok: false,
+    status: 404,
+  });
+
+  await expect(fetchPropertyById('fakeid')).rejects.toThrow('Property not found');
+});
+
+test('fetchOpenHouses returns array of open houses', async () => {
+  global.fetch.mockResolvedValueOnce({
+    ok: true,
+    json: async () => [{ id: 1, OpenHouseDate: '2026-08-01' }],
+  });
+
+  const data = await fetchOpenHouses('1115119412');
+  expect(fetch).toHaveBeenCalledWith('/api/properties/1115119412/openhouses');
+  expect(Array.isArray(data)).toBe(true);
+});
+
+test('fetchOpenHousesByDateRange passes date params', async () => {
+  global.fetch.mockResolvedValueOnce({
+    ok: true,
+    json: async () => [],
+  });
+
+  await fetchOpenHousesByDateRange('2026-08-01', '2026-08-31');
+  expect(fetch).toHaveBeenCalledWith(
+    expect.stringContaining('startDate=2026-08-01')
+  );
 });
